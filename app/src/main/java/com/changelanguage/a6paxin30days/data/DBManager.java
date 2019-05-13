@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.changelanguage.a6paxin30days.model.Users;
 
@@ -101,12 +102,61 @@ public class DBManager extends SQLiteOpenHelper {
         Log.d(Tag,"Add User Successfully");
     }
 
-    public void checkLogin (String username, String password, SQLiteDatabase db){
-        String get_user_by_username = "SELECT * FROM " + TABLE_USERS + " where " + COLUMN_USER_USERNAME + "=" + username;
-        Cursor user;
-//        user = (Cursor) db.query(get_user_by_username);
-//        if (get_user_by_username.)
-//        return null;
+    public Users getUser (String username){
+        if (username != null){
+            String countQuery = "SELECT  * FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_USERNAME + " = '"+ username + "' LIMIT 1";
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(countQuery, null);
+//            Users user = new Users("admin","admin",148,50);
+//            return user;
+            if (cursor.getCount() > 0){
+                cursor.moveToFirst();
+                Integer user_id = cursor.getInt(cursor.getColumnIndex("id"));
+                String user_password = cursor.getString(cursor.getColumnIndex("password"));
+                Integer user_tall = cursor.getInt(cursor.getColumnIndex("tall"));
+                Integer user_weight = cursor.getInt(cursor.getColumnIndex("weight"));
+                Users user = new Users(user_id,username,user_password,user_tall,user_weight);
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean updateUser(Integer id, String password, Integer tall, Integer weight){
+        if (password != null || tall != null || weight != null){
+            ContentValues update_data = new ContentValues();
+            update_data.put("password",password);
+            update_data.put("tall", tall);
+            update_data.put("weight", weight);
+            SQLiteDatabase db = this.getReadableDatabase();
+            db.update(TABLE_USERS,update_data,"id = " + id,null);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkLogin (String username, String password){
+        String countQuery = "SELECT  * FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_USERNAME + " = '"+ username + "'"
+                + " AND " + COLUMN_USER_PASSWORD + " = '"+ password + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        if (count > 0){
+            return true;
+        }
+        return false;
+    }
+    public  boolean checkUsernameRegister(String username) {
+        String countQuery = "SELECT  * FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_USERNAME + " = '"+ username + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        if (count > 0){
+            return false;
+        }
+        return true;
     }
 
 }

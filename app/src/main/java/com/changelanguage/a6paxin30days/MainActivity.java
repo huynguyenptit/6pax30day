@@ -1,5 +1,7 @@
 package com.changelanguage.a6paxin30days;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,57 +10,71 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.changelanguage.a6paxin30days.data.DBManager;
-import com.changelanguage.a6paxin30days.model.Users;
 
 public class MainActivity extends AppCompatActivity {
     private EditText editUsername;
     private EditText editPassword;
-    private EditText editPasswordConfirm;
-    private EditText editTall;
-    private EditText editWeight;
+    private Button btnLogin;
     private Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final DBManager db = new DBManager(MainActivity.this);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_preference",MainActivity.this.MODE_PRIVATE);
+        String username = sharedPreferences.getString("username_preference",null);
+        if (username != null){
+            if (sharedPreferences.getInt("user_type",0) == 1){
+                Toast.makeText(MainActivity.this,"Day la user!!!!" + sharedPreferences.getInt("user_type",0),Toast.LENGTH_LONG).show();
+            }else if (sharedPreferences.getInt("user_type",0) == 2){
+                Intent home_admin = new Intent(MainActivity.this,HomeAdminActivity.class);
+                startActivity(home_admin);
+            }else {
+                login();
+            }
+        }else {
+            login();
+        }
+    }
+
+    public void login(){
         editUsername = findViewById(R.id.editUsername);
         editPassword = findViewById(R.id.editPassword);
-        editPasswordConfirm = findViewById(R.id.editPasswordConfirm);
-        editTall = findViewById(R.id.editTall);
-        editWeight = findViewById(R.id.editWeight);
+        btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
-        Toast.makeText(MainActivity.this,"hello",Toast.LENGTH_SHORT).show();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Users add_user = register();
-                if (add_user != null && check_password(editPassword.getText().toString(),editPasswordConfirm.getText().toString())){
-                    db.addUser(add_user);
+                Intent register = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(register);
+            }
+        });
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = editUsername.getText().toString();
+                String password = editPassword.getText().toString();
+                String admin = "admin";
+                DBManager db = new DBManager(MainActivity.this);
+                if (db.checkLogin(username,password)){
+                    SharedPreferences sharedPreferences = getSharedPreferences("user_preference",MainActivity.this.MODE_PRIVATE);
+                    SharedPreferences.Editor edit_preference = sharedPreferences.edit();
+                    edit_preference.clear();
+                    edit_preference.putString("username_preference",username);
+                    if (username.contentEquals("admin")){
+                        edit_preference.putInt("user_type",2);
+                        Intent home_admin = new Intent(MainActivity.this,HomeAdminActivity.class);
+                        startActivity(home_admin);
+                    }else {
+                        edit_preference.putInt("user_type",1);
+                    }
+                    edit_preference.apply();
+                    Toast.makeText(MainActivity.this, "Đăng nhập thành công!",Toast.LENGTH_LONG).show();
                 }else{
-                    Toast.makeText(MainActivity.this, "Sai me m roi babe!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Sai tài khoản hoặc mật khẩu!",Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    private Users register(){
-        String username = editUsername.getText().toString();
-        String password = editPassword.getText().toString();
-        String tall = editTall.getText().toString();
-        String weight = editWeight.getText().toString();
-        int int_tall = Integer.parseInt(tall);
-        int int_weight = Integer.parseInt(weight);
-        Users users = new Users(username,password,int_tall, int_weight);
-        return users;
-    }
-
-    private boolean check_password(String password, String confirm_password){
-        boolean check = false;
-        if (password == confirm_password){
-            check = true;
-        }
-        return check;
-    }
 }

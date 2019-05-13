@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,6 +28,22 @@
             android:ems="10"
             android:hint="Password"
             />
+
+        <EditText
+            android:id="@+id/editTall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tall (cm)"
+            android:ems="10"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/editWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Weight (kg)"
+            android:inputType="number" />
 
         <LinearLayout
             android:layout_width="match_parent"

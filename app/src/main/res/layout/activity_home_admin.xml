@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_home_admin"
+    android:orientation="vertical"
+    android:paddingTop="80dp"
+    tools:context=".HomeAdminActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quản lý ứng dụng 30 ngày 6 múi"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="#ffffff"
+        />
+
+    <LinearLayout
+        android:paddingTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Quản lý lịch trình tập"
+            android:id="@+id/btnListSchedules"
+            />
+
+        <Button
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/btnListQA"
+            android:text="Quản lý câu hỏi thường gặp" />
+
+        <Button
+            android:layout_marginTop="15dp"
+            android:id="@+id/btnUserInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Quản lý tài khoản của tôi" />
+    </LinearLayout>
+
+</LinearLayout>
